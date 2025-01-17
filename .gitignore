@@ -1,0 +1,27 @@
+# Ambiente virtuale
+.venv/
+__pycache__/
+*.py[cod]
+*.pyo
+
+# File di configurazione Firebase (NON condividerlo!)
+config/firebase_config.json
+
+# File di log
+*.log
+*.txt
+
+# Configurazioni di sistema/IDE
+*.swp
+*~
+.idea/
+.vscode/
+*.DS_Store
+
+# File di cache di Python
+*.pyc
+__pycache__/
+
+# File generati automaticamente
+*.db
+.env
