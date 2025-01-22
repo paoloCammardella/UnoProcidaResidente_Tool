@@ -12,26 +12,18 @@ except Exception as e:
     print(f"Errore nella connessione al Realtime Database: {e}")
 
 
-def save_trip(nomeNave, oraPartenza, minutiPartenza, oraArrivo, minutiArrivo,
-              portoPartenza, portoArrivo, giorniInizioEsclusione, meseInizioEsclusione,
-              annoInizioEsclusione, giorniFineEsclusione, meseFineEsclusione,
-              annoFineEsclusione, giorniSettimana):
+def save_trip(nomeNave, oraPartenza, oraArrivo, portoPartenza, portoArrivo, inizioEsclusione,
+              fineEsclusione, giorniSettimana):
     try:
         ref = db.reference("Transports")
         trip_data = {
             "nomeNave": nomeNave,
             "oraPartenza": oraPartenza,
-            "minutiPartenza": minutiPartenza,
             "oraArrivo": oraArrivo,
-            "minutiArrivo": minutiArrivo,
             "portoPartenza": portoPartenza,
             "portoArrivo": portoArrivo,
-            "giorniInizioEsclusione": giorniInizioEsclusione,
-            "meseInizioEsclusione": meseInizioEsclusione,
-            "annoInizioEsclusione": annoInizioEsclusione,
-            "giorniFineEsclusione": giorniFineEsclusione,
-            "meseFineEsclusione": meseFineEsclusione,
-            "annoFineEsclusione": annoFineEsclusione,
+            "inizioEsclusione": inizioEsclusione,
+            "fineEsclusione": fineEsclusione,
             "giorniSettimana": giorniSettimana
         }
 

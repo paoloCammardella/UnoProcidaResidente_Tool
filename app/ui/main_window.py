@@ -1,11 +1,12 @@
 import tkinter as tk
 from tkinter import ttk, messagebox
-from tkcalendar import Calendar
-from PIL import Image, ImageTk
 from app.services.firebase_service import save_trip
 from app.ui.confirmation_dialog import OpenConfirmationDialog
+from app.utils.validators import update_arrival_options, format_time_entry, format_date_entry
+
 
 def start_UI():
+
     def handle_save():
         dati = {
             "nomeNave": type_combobox.get(),
@@ -15,31 +16,23 @@ def start_UI():
             "oraArrivo": ora_arrivo_entry.get(),
             "dataInizioEsclusione": inizio_esclusione_entry.get(),
             "dataFineEsclusione": fine_esclusione_entry.get(),
-            "giorniSettimana": [giorno.get() for giorno in giorno_selezionato]
+            "giorniSettimana": get_selected_days_as_string()
         }
 
-        ora_partenza_h, ora_partenza_m = dati["oraPartenza"].split(":")
-        ora_arrivo_h, ora_arrivo_m = dati["oraArrivo"].split(":")
-
-        inizio_esclusione_day, inizio_esclusione_month, inizio_esclusione_year = dati["dataInizioEsclusione"].split("/")
-        fine_esclusione_day, fine_esclusione_month, fine_esclusione_year = dati["dataFineEsclusione"].split("/")
+        ora_partenza_h, ora_partenza_m = dati["oraPartenza"].split(":");
+        ora_arrivo_h, ora_arrivo_m = dati["oraArrivo"].split(":");
 
         formatted_dati = {
             "nomeNave": dati["nomeNave"],
-            "oraPartenza": int(ora_partenza_h),
-            "minutiPartenza": int(ora_partenza_m),
-            "oraArrivo": int(ora_arrivo_h),
-            "minutiArrivo": int(ora_arrivo_m),
+            "oraArrivo": ora_arrivo_h + ":" + ora_arrivo_m + ":00",
+            "oraPartenza": ora_partenza_h + ":" + ora_partenza_m + ":00",
             "portoPartenza": dati["portoPartenza"],
             "portoArrivo": dati["portoArrivo"],
-            "giorniInizioEsclusione": int(inizio_esclusione_day),
-            "meseInizioEsclusione": int(inizio_esclusione_month),
-            "annoInizioEsclusione": int(inizio_esclusione_year),
-            "giorniFineEsclusione": int(fine_esclusione_day),
-            "meseFineEsclusione": int(fine_esclusione_month),
-            "annoFineEsclusione": int(fine_esclusione_year),
+            "inizioEsclusione": dati["dataInizioEsclusione"],
+            "fineEsclusione": dati["dataFineEsclusione"],
             "giorniSettimana": dati["giorniSettimana"]
         }
+
 
         if not (ora_partenza_h.isdigit() and ora_partenza_m.isdigit()):
             messagebox.showerror("Errore", "Formato ora partenza non valido. Usa hh:mm.")
@@ -63,25 +56,11 @@ def start_UI():
                 arrival_combobox.set("")
                 ora_partenza_entry.delete(0, tk.END)
                 ora_arrivo_entry.delete(0, tk.END)
-                giorno_selezionato.set([0] * 7)
+                for var in giorno_selezionato:
+                    var.set(0)
+
             except Exception as e:
                 messagebox.showerror("Errore", f"Impossibile salvare la corsa: {e}")
-
-    def show_calendar(entry_field):
-        def select_date(selected_date):
-            entry_field.delete(0, tk.END)
-            entry_field.insert(0, selected_date)
-            calendar_window.destroy()
-
-        calendar_window = tk.Toplevel(root)
-        calendar_window.overrideredirect(True)
-
-        calendar_window.geometry(f"+{root.winfo_x() + 100}+{root.winfo_y() + 100}")
-
-        calendar = Calendar(calendar_window, selectmode="day", date_pattern="dd/mm/yyyy")
-        calendar.pack(padx=10, pady=10)
-        select_button = tk.Button(calendar_window, text="Seleziona", command=lambda: select_date(calendar.get_date()))
-        select_button.pack(pady=5)
 
     ports = ['Napoli', 'Procida', 'Pozzuoli', 'Ischia', 'Napoli Porta di Massa', 'Napoli Mergellina', 'Casamicciola',
              'Monte di Procida']
@@ -103,28 +82,57 @@ def start_UI():
     type_combobox = ttk.Combobox(root, values=trasports)
     type_combobox.grid(row=2, column=1, padx=10, sticky="ew")
 
+    departure_var = tk.StringVar()
+    arrival_var = tk.StringVar()
+
     tk.Label(root, text="Porto partenza:").grid(row=3, column=0, pady=10, padx=10, sticky="w")
-    departure_combobox = ttk.Combobox(root, values=ports)
+    departure_combobox = ttk.Combobox(root, textvariable=departure_var, values=ports)
     departure_combobox.grid(row=3, column=1, padx=10, sticky="ew")
 
     tk.Label(root, text="Porto arrivo:").grid(row=4, column=0, pady=10, padx=10, sticky="w")
-    arrival_combobox = ttk.Combobox(root, values=ports)
+    arrival_combobox = ttk.Combobox(root, textvariable=arrival_var, values=ports)
     arrival_combobox.grid(row=4, column=1, padx=10, sticky="ew")
 
+    departure_var.trace_add("write", lambda name, index, operation: update_arrival_options(departure_var, arrival_var, ports, arrival_combobox))
+
+    ora_partenza_var = tk.StringVar()
+    ora_arrivo_var = tk.StringVar()
+
+    ora_partenza_entry = tk.Entry(root, textvariable=ora_partenza_var)
+    ora_arrivo_entry = tk.Entry(root, textvariable=ora_arrivo_var)
+
+    ora_partenza_var.trace_add(
+        "write", lambda var, index, mode: format_time_entry(ora_partenza_entry, ora_partenza_var, index, mode)
+    )
+    ora_arrivo_var.trace_add(
+        "write", lambda var, index, mode: format_time_entry(ora_arrivo_entry, ora_arrivo_var, index, mode)
+    )
+
+    # Layout
     tk.Label(root, text="Ora partenza (hh:mm):").grid(row=5, column=0, pady=10, padx=10, sticky="w")
-    ora_partenza_entry = tk.Entry(root)
     ora_partenza_entry.grid(row=5, column=1, padx=10, sticky="ew")
 
     tk.Label(root, text="Ora arrivo (hh:mm):").grid(row=6, column=0, pady=10, padx=10, sticky="w")
-    ora_arrivo_entry = tk.Entry(root)
     ora_arrivo_entry.grid(row=6, column=1, padx=10, sticky="ew")
 
-    tk.Label(root, text="Giorni inizio esclusione:").grid(row=7, column=0, pady=10, padx=10, sticky="w")
-    inizio_esclusione_entry = tk.Entry(root)
+    inizio_esclusione_var = tk.StringVar()
+    fine_esclusione_var = tk.StringVar()
+
+    inizio_esclusione_entry = tk.Entry(root, textvariable=inizio_esclusione_var)
+    fine_esclusione_entry = tk.Entry(root, textvariable=fine_esclusione_var)
+
+    inizio_esclusione_var.trace_add(
+        "write", lambda var, index, mode: format_date_entry(inizio_esclusione_entry, inizio_esclusione_var)
+    )
+    fine_esclusione_var.trace_add(
+        "write", lambda var, index, mode: format_date_entry(fine_esclusione_entry, fine_esclusione_var)
+    )
+
+    # Layout
+    tk.Label(root, text="Data inizio esclusione:").grid(row=7, column=0, pady=10, padx=10, sticky="w")
     inizio_esclusione_entry.grid(row=7, column=1, padx=10, sticky="ew")
 
-    tk.Label(root, text="Giorni fine esclusione:").grid(row=8, column=0, pady=10, padx=10, sticky="w")
-    fine_esclusione_entry = tk.Entry(root)
+    tk.Label(root, text="Data fine esclusione:").grid(row=8, column=0, pady=10, padx=10, sticky="w")
     fine_esclusione_entry.grid(row=8, column=1, padx=10, sticky="ew")
 
     tk.Label(root, text="Giorno della settimana:").grid(row=9, column=0, pady=10, padx=10, sticky="w")
@@ -132,12 +140,24 @@ def start_UI():
     checkbox_frame = tk.Frame(root)
     checkbox_frame.grid(row=9, column=1, padx=10, sticky="w")
 
+    # List of IntVar for each day of the week (7 days)
     giorno_selezionato = [tk.IntVar() for _ in range(7)]
     giorni_settimana = ["Lun", "Mar", "Mer", "Gio", "Ven", "Sab", "Dom"]
+
+    def get_selected_days_as_string():
+        selected_days = ""
+        for i, var in enumerate(giorno_selezionato):
+            if var.get() == 1:
+                selected_days += str(i + 1)
+        return selected_days
 
     for i, giorno in enumerate(giorni_settimana):
         cb = tk.Checkbutton(checkbox_frame, text=giorno, variable=giorno_selezionato[i])
         cb.pack(side="left", padx=5)
+
+    def show_selected_days():
+        selected_days = get_selected_days_as_string()
+        print(f"Selected days: {selected_days}")
 
     save_button = tk.Button(root, text="Salva", command=handle_save)
     save_button.grid(row=10, column=0, columnspan=3, pady=20)
