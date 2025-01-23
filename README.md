@@ -48,13 +48,13 @@ UnoProcidaResidente_Tool/
 
 1. **Clone the repository**:  
    ```bash
-   git clone https://github.com/your-username/salva-corsa.git
-   cd salva-corsa
+   git clone git@github.com:paoloCammardella/UnoProcidaResidente_Tool.git
+   cd UnoProcidaResidente_Tool
     ```
 2. **Create a virtual environment (optional but recommended)**:
     ```bash
-        python3 -m venv venv
-        source venv/bin/activate
+        python3 -m venv .venv
+        source .venv/bin/activate
     ```
 
 3. **Install the dependencies:**
