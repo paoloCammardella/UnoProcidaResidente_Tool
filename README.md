@@ -1,6 +1,6 @@
-# Save Race
+# UnoProcidaResidente_Tool
 
-A Python application that allows you to save information about races (name, duration, type) to a Firebase database using a graphical user interface built with `tkinter`.
+A Python application that allows you to save information about Transports to Procida, ona *Firebase realtime database* using a graphical user interface built with `tkinter`.
 
 ---
 
