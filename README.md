@@ -1,6 +1,6 @@
-# Save Race
+# UnoProcidaResidente_Tool
 
-A Python application that allows you to save information about races (name, duration, type) to a Firebase database using a graphical user interface built with `tkinter`.
+A Python application that allows you to save information about Transports to Procida, ona *Firebase realtime database* using a graphical user interface built with `tkinter`.
 
 ---
 
@@ -15,17 +15,23 @@ A Python application that allows you to save information about races (name, dura
 ## **Project Structure**
 
 ```plaintext
-save_race/
-├── main.py                  # Entry point of the application
-├── ui/
-│   └── ui_manager.py        # Handles the user interface
-├── services/
-│   └── firebase_service.py  # Handles Firebase database operations
-├── utils/
-│   └── validators.py        # Data validation functions
-├── config/
-│   └── firebase_config.json # Firebase configuration file
-├── requirements.txt         # Project dependencies
+UnoProcidaResidente_Tool/
+├──app\
+|  ├── ui/
+|  │   ├── __init__.py                    
+|  │   ├── confirmation_dialog.py         # Dialog that shows confirmation
+|  │   └── main_window.py                 # Main window of the UI
+|  ├── services/
+|  │   ├── __init__.py                    
+|  │   └── firebase_service.py            # Handles Firebase database operations
+|  ├── utils/
+|  │   ├── __init__.py                    
+|  │   └── validators.py                  # Data validation functions
+|  ├── config/
+|  │   ├── __init__.py                    
+|  │   └── firebase_config.json # Firebase configuration file
+|  ├── requirements.txt         # Project dependencies
+|  ├── main.py                  # Entry point of the application
 └── README.md                # Project documentation
 ```
 
@@ -42,13 +48,13 @@ save_race/
 
 1. **Clone the repository**:  
    ```bash
-   git clone https://github.com/your-username/salva-corsa.git
-   cd salva-corsa
+   git clone git@github.com:paoloCammardella/UnoProcidaResidente_Tool.git
+   cd UnoProcidaResidente_Tool
     ```
 2. **Create a virtual environment (optional but recommended)**:
     ```bash
-        python3 -m venv venv
-        source venv/bin/activate
+        python3 -m venv .venv
+        source .venv/bin/activate
     ```
 
 3. **Install the dependencies:**
