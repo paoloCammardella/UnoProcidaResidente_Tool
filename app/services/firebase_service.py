@@ -13,7 +13,7 @@ except Exception as e:
 
 
 def save_trip(nomeNave, oraPartenza, oraArrivo, portoPartenza, portoArrivo, inizioEsclusione,
-              fineEsclusione, giorniSettimana):
+              fineEsclusione, giorniSettimana, prezzoIntero, prezzoRidotto):
     try:
         ref = db.reference("Transports")
         trip_data = {
@@ -24,7 +24,9 @@ def save_trip(nomeNave, oraPartenza, oraArrivo, portoPartenza, portoArrivo, iniz
             "portoArrivo": portoArrivo,
             "inizioEsclusione": inizioEsclusione,
             "fineEsclusione": fineEsclusione,
-            "giorniSettimana": giorniSettimana
+            "giorniSettimana": giorniSettimana,
+            "prezzoIntero": prezzoIntero,
+            "prezzoRidotto": prezzoRidotto
         }
 
         new_trip_ref = ref.push()

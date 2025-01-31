@@ -16,7 +16,10 @@ def start_UI():
             "oraArrivo": ora_arrivo_entry.get(),
             "dataInizioEsclusione": inizio_esclusione_entry.get(),
             "dataFineEsclusione": fine_esclusione_entry.get(),
-            "giorniSettimana": get_selected_days_as_string()
+            "giorniSettimana": get_selected_days_as_string(),
+            "prezzoIntero": prezzo_intero_entry.get(),
+            "prezzoRidotto": prezzo_ridotto_entry.get()
+
         }
 
         ora_partenza_h, ora_partenza_m = dati["oraPartenza"].split(":");
@@ -30,7 +33,9 @@ def start_UI():
             "portoArrivo": dati["portoArrivo"],
             "inizioEsclusione": dati["dataInizioEsclusione"],
             "fineEsclusione": dati["dataFineEsclusione"],
-            "giorniSettimana": dati["giorniSettimana"]
+            "giorniSettimana": dati["giorniSettimana"],
+            "prezzoIntero": dati["prezzoIntero"],
+            "prezzoRidotto": dati["prezzoRidotto"]
         }
 
 
@@ -135,10 +140,22 @@ def start_UI():
     tk.Label(root, text="Data fine esclusione:").grid(row=8, column=0, pady=10, padx=10, sticky="w")
     fine_esclusione_entry.grid(row=8, column=1, padx=10, sticky="ew")
 
-    tk.Label(root, text="Giorno della settimana:").grid(row=9, column=0, pady=10, padx=10, sticky="w")
+    prezzo_intero_var = tk.DoubleVar()
+    prezzo_ridotto_var = tk.DoubleVar()
+
+    prezzo_intero_entry = tk.Entry(root, textvariable=prezzo_intero_var)
+    prezzo_ridotto_entry = tk.Entry(root, textvariable=prezzo_ridotto_var)
+
+    tk.Label(root, text="Prezzo intero:").grid(row=9, column=0, pady=10, padx=10, sticky="w")
+    prezzo_intero_entry.grid(row=9, column=1, padx=10, sticky="ew")
+    
+    tk.Label(root, text="Prezzo ridotto:").grid(row=10, column=0, pady=10, padx=10, sticky="w")
+    prezzo_ridotto_entry.grid(row=10, column=1, padx=10, sticky="ew")
+
+    tk.Label(root, text="Giorno della settimana:").grid(row=11, column=0, pady=10, padx=10, sticky="w")
 
     checkbox_frame = tk.Frame(root)
-    checkbox_frame.grid(row=9, column=1, padx=10, sticky="w")
+    checkbox_frame.grid(row=11, column=1, padx=10, sticky="w")
 
     # List of IntVar for each day of the week (7 days)
     giorno_selezionato = [tk.IntVar() for _ in range(7)]
@@ -160,6 +177,6 @@ def start_UI():
         print(f"Selected days: {selected_days}")
 
     save_button = tk.Button(root, text="Salva", command=handle_save)
-    save_button.grid(row=10, column=0, columnspan=3, pady=20)
+    save_button.grid(row=12, column=0, columnspan=3, pady=20)
 
     root.mainloop()
