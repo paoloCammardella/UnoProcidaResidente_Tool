@@ -1,7 +1,7 @@
 import firebase_admin
 from firebase_admin import credentials, db
 
-cred = credentials.Certificate("app/config/os-android-d463a-firebase-adminsdk-ryqo8-0ac66eec8a.json")
+cred = credentials.Certificate("app/config/<your_file_here>.json")
 firebase_admin.initialize_app(cred, {
     'databaseURL': 'https://os-android-d463a-default-rtdb.europe-west1.firebasedatabase.app/'
 })
